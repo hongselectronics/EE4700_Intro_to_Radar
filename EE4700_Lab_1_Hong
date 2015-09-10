@@ -1,0 +1,38 @@
+%Name: Jeremy Hong
+%Date: 9/10/2015
+%Class: EE 4700 Introduction to Radar
+%Lab 1
+%
+% Copyright notice & terms of use available at: 
+% https://github.com/hongselectronics/EE4700_Intro_to_Radar/blob/master/LICENSE.md
+% View code revision history here: 
+%https://github.com/hongselectronics/EE4700_Intro_to_Radar
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Clean up
+clear
+clc
+close all
+format short
+%
+% Constants
+%
+c = 3*10^8;               %Speed of Light 3e8 m/sec
+k = 1.38*10^-23;       %Boltzmann's constant 1.38e-23 watt-second/Kelvin
+T_0 = 290;                 %Standard reference temperature T_0 = 290 Kelvin
+R_E = 6371000;         %radius of the Earth R_E = 6371 km
+k_r = 4/3;                   %refraction factor k_r = 4/3
+R_RT_test = 100000; %Test radar-to-target range R_RT_test = 100 km
+R_RJ_test = 150000;  %Test radar-to-jammer range R_RJ_test = 150 km
+%
+P_R = 1000000;       %Peak transmit power P_R = 1 MW
+G_RT = 38;               %Mainbeam gain G_RT = 38 dBi
+G_RJ = G_RT - 20;    %Antenna gain in the direction of the jammer G_RJ = 18 dBi
+f_c = 3000000000;   %Carrier Frequency f_c = 3 GHz
+G_sp = 2;                  %Signal processing gain G_sp = 2       
+G_I = 12;                   %Integration gain G_I = 12
+F_R = 4;                    %Receiver noise figure F_R = 4 dB
+B_R = 1000000;        %Receiver processing bandwidth B_R = 1 MHz
+L_R = 8;             %Total radar related losses L_R = 8 dB
+SNR_dt = 14;         %Detection threshold SNR_dt = 14 dB
+h_R = 10;            %Height h_R = 10 meters
