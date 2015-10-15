@@ -23,7 +23,7 @@ T_0 = 290;             %Standard reference temperature T_0 = 290 Kelvin
 R_RT_test = 60000;     %Test radar-to-target range R_RT_test = 60 km
 %% Radar Characteristics
 D = 0.6;               %Antenna Diameter D = 0.6 meters
-f_c = 6000000000;      %Carrier Frequency f_c = 6 GHz
+f_c = 10000000000;      %Carrier Frequency f_c = 6 GHz
 e_space = 0.5;         %Element spacing relative to a wavelength d/wavelength = 0.5
 rho = 0.60;            %Efficiency rho = 0.60
 theta_0 = -30;         %Array antenna beam steering angle theta_0 = -30 degrees
@@ -31,31 +31,36 @@ theta_0 = -30;         %Array antenna beam steering angle theta_0 = -30 degrees
 Wavelength = c/f_c;    %Wavelength meters (m)
 %% Calculations
 A = pi*(D/2)^2;        %Physical area of the antenna, square meters
+d = 0.5*Wavelength;
 %% The antenna mainbeam Gain (G) in both absolute and dBi
 G = (4*pi*rho*A)/Wavelength^2;
 G_dBi = 10*log10(G);
 fprintf('The antenna mainbeam gain (G) is: %3.4f absolute, %3.4f dBi\n', G, G_dBi);
 %
 %% The half-power (-3 db) beamwidth (theta_3dB) in degrees
-theta_3dB = 51*Wavelength/D;
-fprintf('\nThe half-power (-3 dB) beamwidth is: %3.4f degrees\n',theta_3dB);
+theta_3dB = (51*Wavelength)/D;
+fprintf('\nThe half-power (-3 dB) beamwidth is: %3.2f degrees\n',theta_3dB);
 %
 %% The null-to-null beamwidth (theta_nn) in degrees
-theta_nn = 115*Wavelength/D;
-fprintf('\nThe null-to-null beawidth is: %3.4f degrees\n',theta_3dB);
+N = D/d;
+N = floor(N);
+theta_nn = (115*Wavelength)/D;
+fprintf('\nThe null-to-null beawidth is: %3.2f degrees\n',theta_nn);
 %
 %% The antenna gain in the direction of the first sidelobe (G_1sl) in both absolute and dBi
 % From table 4-1 the uniform illumination function has a first sidelobe
 % level of -13.2 dBi
-G_1sl_dBi = -13.2;
+G_1sl_dBi = G_dBi-13.2;
 G_1sl = 10^(G_1sl_dBi/10);
 fprintf('\nThe antenna gain in the direction of the first sidelobe is: %3.4f absolute, %3.4f dBi\n', G_1sl, G_1sl_dBi)
 %
 %% Plot the normalized antenna gain pattern vs. angle -90 to +90 degrees
 theta = -pi/2:0.001:pi/2;
-G_theta = (sin((pi*D*sin(theta))./Wavelength)./((pi*D*sin(theta))./Wavelength)).^2;
-plot((180/pi)*theta, G_theta)
+G_theta = (sin((pi.*D.*sin(theta))./Wavelength)./((pi.*D.*sin(theta))./Wavelength)).^2;
+plot((180/pi).*theta, 10*log10(G_theta))
 title('Normalized Antenna Gain Pattern vs. Angle')
+axis([-100 100 -80 0])
+grid on
 xlabel('Angle (Degrees)')
 ylabel('Normalized Gain')
 %% The incremental phase shift between elements (delta_phi) necessary to steer the beam to an
@@ -76,5 +81,13 @@ theta_3dB1_deg = theta_3dB1*(180/pi);
 fprintf('\nThe half-power beamwidth (theta_3dB) when the beam is steered to an angle is: %3.4f degrees\n',theta_3dB1_deg)
 %
 %% Plot the normalized array factor (G_a) vs. angle, -90 to +90 degrees, when the beam is steered to an angle (theta_0)
-
+figure
+theta = -pi/2:0.001:pi/2;
+G_a_theta = ((sin((N.*pi.*e_space).*(sin(theta)-sin(theta_0))))./(N.*sin(pi.*e_space).*(sin(theta)-sin(theta_0)))).^2;
+plot((180/pi).*theta, 10*log10(G_a_theta))
+title('Normalized Antenna Gain Pattern vs. Angle')
+axis([-90 90 -80 0])
+grid on
+xlabel('Angle (Degrees)')
+ylabel('Normalized Gain')
 
